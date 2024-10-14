@@ -1,0 +1,63 @@
+common:
+  data: G:/AA/IsoGD/IsoGD_phase_1/isoGD_data
+  splits: G:/AA/IsoGD/IsoGD_phase_1/isoGD_data
+
+  batch_size: 4
+  test_batch_size: 4
+  num_workers: 0
+  num_classes: 249
+
+  #-------basic Hyparameter----------
+  visdom:
+    enable: False
+    visname: IsoGD
+  dataset: IsoGD #Database name e.g., NTU, THUREAD ...
+  report_freq: 1
+  dist: False
+  vis_feature: True # Feature Visualization?
+  DEBUG: False
+
+  scheduler:
+    name: ReduceLR
+    patience: 4
+    warm_up_epochs: 3
+  loss:
+    name: SoftCE   #  CE_smooth = LabelSmoothingCrossEntropy(), CE = torch.nn.CrossEntropyLoss(), MSE = torch.nn.MSELoss(), BCE = torch.nn.BCELoss(), SoftCE = SoftTargetCrossEntropy(), TempLoss = TempoLoss(),
+    labelsmooth: True
+  MultiLoss: False
+  loss_lamdb: [ 1, 0.5, 0.5, 0.5 ]
+
+model:
+  Network: DSNV2 # e.g., DSNV2 or FusionNet
+  pretrained: ''
+  resumelr: ''
+#  resume: ./weight/model_best.pth.tar
+  resume: False
+  SYNC_BN: 1
+  recoupling: True
+  knn_attention: 0.7
+  sharpness: True
+  temp: [ 0.04, 0.07 ]
+  frp: True
+  SEHeads: 1
+  N: 6 # Number of Transformer Blocks
+  grad_clip: 5.
+
+fusion:
+  #-------Used for fusion network----------
+  rgb_checkpoint:  
+    cs16: ./weight/IsoGD-16-DTNV2-M/model_best.pth.tar
+    cs32: ./weight/model_best.pth.tar
+    cs64: ./weight/IsoGD-64-DTNV2-M/model_best.pth.tar
+  depth_checkpoint:
+    cs16: ./weight/IsoGD-16-DTNV2-K/model_best.pth.tar
+    cs32: ./weight/model_best.pth.tar
+    cs64: ./weight/IsoGD-64-DTNV2-K/model_best.pth.tar
+dataset:
+  flip: 0.0
+  rotated: 0.5
+  angle: (-10, 10) # Rotation angle
+  Blur: False
+  resize: (128, 128)
+  crop_size: 112
+  sample_size: 112

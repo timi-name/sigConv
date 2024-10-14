@@ -1,0 +1,69 @@
+# '''
+# Copyright (C) 2010-2021 Alibaba Group Holding Limited.
+# '''
+common:
+  data: G:/AA/hmdb51
+  splits: G:/AA/hmdb51
+
+
+#  data: /root/autodl-tmp
+#  splits: /root/autodl-tmp
+  batch_size: 4
+  test_batch_size: 4
+
+  num_workers: 0
+  num_classes: 51
+  resume:
+  #-------basic Hyparameter----------
+  visdom:
+    enable: False
+    visname: HMDB51
+  dataset: HMDB51 #Database name e.g., NTU, THU ...
+  init_epochs: 0
+  report_freq: 50
+  dist: True
+  vis_feature: True # Visualization?
+
+  scheduler:
+    name: cosin
+    patience: 4
+    warmup-epochs: 3
+  loss:
+    name: CE
+    labelsmooth: True
+  MultiLoss: False
+  loss_lamdb: [ 1, 0.5, 0.5, 0.5 ]
+
+model:
+  Network: DSNV2 # e.g., DSNV2 or FusionNet
+  pretrained:
+  resumelr:
+#  resume: /root/autodl-tmp/code/Checkpoints/DSNV2-HMDB51-M-20240628-114119/checkpoint.pth.tar
+  SYNC_BN: 1
+  recoupling: True
+  knn_attention: 0.7
+  sharpness: True
+  temp: [ 0.04, 0.07 ]
+  frp: False
+  SEHeads: 1
+  N: 6 # Number of Transformer Blocks
+
+fusion:
+  #-------Used for fusion network----------
+  rgb_checkpoint:
+    cs16: ''
+    cs32: ''
+    cs64: ''
+  depth_checkpoint:
+    cs16: ''
+    cs32: ''
+    cs64: ''
+
+dataset:
+  flip: 0.5
+  rotated: 0.5
+  angle: (-10, 10) # Rotation angle
+  Blur: False
+  resize: (256, 256)
+  crop_size: 224
+  sample_size: 224
